@@ -1,13 +1,20 @@
-# VSCode is dead - A personnal neovim configuration
+# VS Code is Dead – A Personal **Neovim** Configuration
 
-Want a simple but usable neovim configuration ? You are at the right place.
+Want a simple yet usable Neovim setup? You’re in the right place.
 
-## Installation on debian like systems
+## Installation on Debian-like Systems
 
-On an up-to-date system you can run :
+On an up-to-date system, run:
 
 ```bash
-chmod +x install.sh 
+git clone https://github.com/theophane-droid/greatneovim
+chmod +x install.sh
+./install.sh
+````
+# Updating to the Latest Version
+
+Simply run:
+
+```bash
 ./install.sh
 ```
-
