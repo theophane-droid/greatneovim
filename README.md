@@ -11,6 +11,7 @@ git clone https://github.com/theophane-droid/greatneovim
 chmod +x install.sh
 ./install.sh
 ````
+
 # Updating to the Latest Version
 
 Simply run:
