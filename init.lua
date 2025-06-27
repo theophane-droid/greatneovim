@@ -200,7 +200,7 @@ vim.keymap.set('n','<leader>fh',':Telescope help_tags<CR>', { desc='Help tags' }
 require('mason').setup()
 require('mason-lspconfig').setup {
     ensure_installed = { "lua_ls","jsonls","yamlls","pyright",
-                         "tsserver","html","cssls" },
+                         "tsserver","html","cssls", "clangd" },
     automatic_installation = true,
 }
 
@@ -251,120 +251,24 @@ require('lspconfig').lua_ls.setup {
         },
     },
 }
+require('lspconfig').clangd.setup {
+    on_attach = on_attach,
+    cmd = { "clangd" },
+    filetypes = { "c", "cpp", "objc", "objcpp" },
+    root_dir = require('lspconfig.util').root_pattern("compile_commands.json", ".git"),
+}
+
+vim.api.nvim_create_user_command("Cheatsheet", function()
+    require("cheatsheet").show()
+end, { desc = "Show Vim/Neovim Cheatsheet" })
 
 vim.cmd.colorscheme 'dracula'
-
--- ============================================================================
--- BUILT-IN CHEATSHEET 
--- ============================================================================
-vim.api.nvim_create_user_command('Cheatsheet', function()
-    local c = {
-        " --- VIM / NEOVIM CHEATSHEET --- ",
-        " ",
-        " --- NAVIGATION --- ",
-        " h, j, k, l        : Left, Down, Up, Right",
-        " w, b, e           : Word forward/back, to word end",
-        " 0, ^, $           : Line start (with/without indent), Line end",
-        " gg, G             : Top, Bottom of file",
-        " f<char>, t<char>  : Find char (on / before)",
-        " Ctrl+o, Ctrl+i    : Jump back / forward",
-        " ",
-        " --- EDITING --- ",
-        " i, a, o, O        : Insert (before/after cursor, new line)",
-        " x                 : Delete char under cursor",
-        " dw, dd, D         : Delete word, line, to EOL",
-        " c<motion>, cc     : Change with motion, change line",
-        " s                 : Substitute char (delete & insert)",
-        " r<char>           : Replace single char",
-        " yy, yw, y<motion> : Yank line, word, with motion",
-        " p, P              : Paste (after / before)",
-        " u, Ctrl+r         : Undo, Redo",
-        " .                 : Repeat last command",
-        " ",
-        " --- MODES --- ",
-        " v, V, Ctrl+v      : Visual char, Visual line, Visual block",
-        " :                 : Command-line mode",
-        " ",
-        " --- EX COMMANDS (:) --- ",
-        " :w                : Write file",
-        " :q                : Quit",
-        " :wq, :x           : Write & Quit",
-        " :e <file>         : Open file",
-        " :sp, :vs          : Horizontal / Vertical split",
-        " /pattern          : Search (n/N next/prev)",
-        " :%s/old/new/g     : Replace all occurrences",
-        " :help <topic>     : Help (e.g. :help motion)",
-        " ",
-        " --- PLUGINS & SHORTCUTS --- ",
-        " <Leader>w         : Save file",
-        " <Leader>q         : Quit Neovim",
-        " <Leader>x         : Save & Quit",
-        " <Leader>e         : Toggle NvimTree",
-        " <Leader>ff        : Find files (Telescope)",
-        " <Leader>fg        : Live grep (Telescope)",
-        " <Leader>fb        : List buffers",
-        " gd                : Go to definition (LSP)",
-        " gr                : Go to references (LSP)",
-        " K                 : Hover docs (LSP)",
-        " <Leader>rn        : Rename symbol (LSP)",
-        " <Leader>ca        : Code action (LSP)",
-        " [d, ]d            : Prev / Next diagnostic",
-        " <Leader>f         : Format file (LSP)",
-        " ",
-        " --- WINDOW NAVIGATION --- ",
-        " Ctrl+h/j/k/l      : Move between windows",
-        " Ctrl+Arrow        : Resize windows",
-        " <Leader>h/l       : Decrease / Increase width",
-        " <Leader>k/j       : Increase / Decrease height",
-        " ",
-        " --- INDENT / DEDENT --- ",
-        " Visual mode (v) or visual line (V):",
-        "   Indent selection   : '>'",
-        "   Dedent selection   : '<'",
-        " Tip: Select lines with V, then > or <, repeat with '.'",
-        " ",
-        " --- COMMENT / UNCOMMENT (Comment.nvim) --- ",
-        " Normal mode         : gcc  (toggle line)",
-        " Visual mode         : gc   (toggle selection)",
-        " ",
-        " --- UNDO & CHAR SEARCH --- ",
-        " u                  : Undo last action",
-        " fX / tX            : Find char X / before X in line",
-        " dfX / dtX          : Delete up to & incl./excl. X",
-        " ;  ,               : Repeat / reverse last f/t search",
-        " ",
-        " --- MISC --- ",
-        " D                  : Delete to the end of line",
-        " A                  : Edit at the end of line",
-        " ciw                : Change inner word",
-        " ",
-        " --- LSP INFO --- ",
-        " Ensure servers are installed via Mason (:Mason).",
-        " ",
-        " --- MACROS --- ",
-        " q<reg> / @<reg>    : Record / play macro (e.g. qa, @a)",
-        " <count>@<reg>      : Play macro count times",
-        " ",
-        " Close this window with :q ",
-    }
-
-    local buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, c)
-    vim.api.nvim_open_win(buf, true, {
-        relative = 'editor',
-        row = 5, col = 5,
-        width = 80,
-        height = #c + 2,
-        border = 'single',
-        style = 'minimal',
-    })
-    vim.bo[buf].filetype   = 'markdown'
-    vim.bo[buf].modifiable = false
-end, { desc = 'Show Vim/Neovim Cheatsheet' })
-
 vim.keymap.set('n','<leader>cs',':Cheatsheet<CR>', { desc='Show Cheatsheet' })
 vim.keymap.set('n','<leader>n', ':set invrelativenumber<CR>', { desc='Toggle relativenumber' })
 vim.keymap.set('n','<leader>t', ':terminal<CR>', { desc='Open terminal' })
 vim.keymap.set('n','<leader>r', ':luafile $MYVIMRC<CR>', { desc='Reload config' })
+vim.keymap.set("n", "<leader>g", vim.lsp.buf.references, { noremap = true, silent = true })
+vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Show diagnostic' })
+
 vim.api.nvim_set_keymap('t','<Esc>','<C-\\><C-n>',{ noremap=true,silent=true })
 
