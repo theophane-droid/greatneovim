@@ -13,7 +13,7 @@ require('packer').startup(function(use)
         requires = { 'nvim-tree/nvim-web-devicons' }, -- file-type icons
         config = function()
             require('nvim-tree').setup {
-                view = { width = 30, relativenumber = true },
+                view = { width = 50, relativenumber = true},
                 renderer = { group_empty = true },
                 filters  = { dotfiles = true },
             }
@@ -188,7 +188,10 @@ vim.keymap.set('n','<leader>q',':q<CR>', { desc='Quit' })
 vim.keymap.set('n','<leader>x',':x<CR>', { desc='Save & quit' })
 
 -- Nvim-tree & Telescope
-vim.keymap.set('n','<leader>e',':NvimTreeToggle<CR>', { desc='Toggle NvimTree' })
+vim.keymap.set('n', '<leader>e', function()
+    vim.cmd('NvimTreeToggle')
+end, { desc = 'Toggle NvimTree with resize' })
+
 vim.keymap.set('n','<leader>ff',':Telescope find_files<CR>',{ desc='Find files' })
 vim.keymap.set('n','<leader>fg',':Telescope live_grep<CR>', { desc='Live grep' })
 vim.keymap.set('n','<leader>fb',':Telescope buffers<CR>',   { desc='Buffers' })
