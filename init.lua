@@ -270,9 +270,20 @@ vim.keymap.set('n','<leader>cs',':Cheatsheet<CR>', { desc='Show Cheatsheet' })
 vim.keymap.set('n','<leader>n', ':set invrelativenumber<CR>', { desc='Toggle relativenumber' })
 vim.keymap.set('n','<leader>t', ':terminal<CR>', { desc='Open terminal' })
 vim.keymap.set('n','<leader>r', ':luafile $MYVIMRC<CR>', { desc='Reload config' })
-vim.keymap.set("n", "<leader>g", vim.lsp.buf.references, { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>ns", ':noh<CR>', { desc='Cancel search' })
+vim.keymap.set('n', "<leader>g", vim.lsp.buf.references, { noremap = true, silent = true })
+vim.keymap.set('n', "<leader>ns", ':noh<CR>', { desc='Cancel search',  silent = true })
 vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Show diagnostic' })
+
+-- Copy-paste shortcuts
+vim.keymap.set('v', "y", '"+y', opts)
+vim.keymap.set("n", "p", '"+p', opts)
+vim.keymap.set("n", "P", '"+P', opts)
+
+vim.keymap.set("i", "<C-v>", '<C-r>+', opts)
+
+vim.keymap.set("n", "<C-a>", "ggVG", { noremap = true, silent = true })
+
+-- No lines numbers
 vim.keymap.set("n", "<leader>ln", function()
   if vim.wo.number then
     vim.wo.number = false
