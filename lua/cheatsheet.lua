@@ -49,6 +49,8 @@ function M.show()
         " <Leader>fg        : Live grep (Telescope)",
         " <Leader>fb        : List buffers",
         " <Leader>ns        : Stop search",
+        " <Leader>n         : Toggle relative line numbers",
+        " <Leader>ln        : Toggle line numbers",
         " gl                : Show actual diagnostic",
         " gd                : Go to definition (LSP)",
         " gr                : Go to references (LSP)",

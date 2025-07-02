@@ -273,6 +273,16 @@ vim.keymap.set('n','<leader>r', ':luafile $MYVIMRC<CR>', { desc='Reload config' 
 vim.keymap.set("n", "<leader>g", vim.lsp.buf.references, { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>ns", ':noh<CR>', { desc='Cancel search' })
 vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Show diagnostic' })
+vim.keymap.set("n", "<leader>ln", function()
+  if vim.wo.number then
+    vim.wo.number = false
+    vim.wo.relativenumber = false
+  else
+    vim.wo.number = true
+    vim.wo.relativenumber = true
+  end
+end, { desc = "Toggle line numbers" })
+
 
 vim.api.nvim_set_keymap('t','<Esc>','<C-\\><C-n>',{ noremap=true,silent=true })
 
