@@ -5,14 +5,11 @@ total=8
 
 echo "[1/$total] Installing dependencies"
 sudo apt update -qq
-
 sudo apt install -y build-essential cmake ninja-build gettext \
   libtool libtool-bin pkg-config unzip curl git ripgrep \
-  libx11-dev libxt-dev xclip wl-clipboard" >/dev/null 2>&1
-
+  libx11-dev libxt-dev xclip wl-clipboard >/dev/null 2>&1
 
 echo "[2/$total] Cloning Neovim"
-
 [ -d "./neovim" ] && rm -rf "./neovim"
 git clone --depth 1 --branch stable https://github.com/neovim/neovim
 cd neovim
@@ -28,8 +25,12 @@ cp ./init.lua ~/.config/nvim/ 2>/dev/null || true
 
 echo "[5/$total] Installing packer"
 PACKER_DIR="$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
-mkdir -p "$(dirname "$PACKER_DIR")"
-git clone --depth 1 https://github.com/wbthomason/packer.nvim "$PACKER_DIR"
+if [ -d "$PACKER_DIR" ]; then
+  echo "[5/$total] Packer already installed, skipping"
+else
+  mkdir -p "$(dirname "$PACKER_DIR")"
+  git clone --depth 1 https://github.com/wbthomason/packer.nvim "$PACKER_DIR"
+fi
 
 read -rp "[6/$total] Create alias 'vim' -> 'nvim'? (y/n) " ans
 if [[ $ans =~ ^[Yy]$ ]]; then
@@ -42,5 +43,5 @@ fi
 echo "[7/$total] Running PackerSync"
 nvim --headless +PackerSync +qa
 
-echo "[8/$total] Done! Vérifiez avec 'nvim --version | grep clipboard'."
+echo "\n/$total] Done! Vérifiez avec 'nvim --version | grep clipboard'."
 
