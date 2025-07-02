@@ -19,3 +19,15 @@ Simply run:
 ```bash
 ./install.sh
 ```
+
+## Mouse Copy-Paste
+
+To enable mouse-based copy-paste, you need an X session.
+This can work either through a local graphical session or via SSH with X11 forwarding enabled:
+
+```
+ssh -X user@host
+```
+
+MobaXterm works as an X11 client, but PuTTY does not.
+
