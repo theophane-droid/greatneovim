@@ -48,6 +48,7 @@ function M.show()
         " <Leader>ff        : Find files (Telescope)",
         " <Leader>fg        : Live grep (Telescope)",
         " <Leader>fb        : List buffers",
+        " <Leader>ns        : Stop search",
         " gl                : Show actual diagnostic",
         " gd                : Go to definition (LSP)",
         " gr                : Go to references (LSP)",

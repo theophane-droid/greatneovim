@@ -271,6 +271,7 @@ vim.keymap.set('n','<leader>n', ':set invrelativenumber<CR>', { desc='Toggle rel
 vim.keymap.set('n','<leader>t', ':terminal<CR>', { desc='Open terminal' })
 vim.keymap.set('n','<leader>r', ':luafile $MYVIMRC<CR>', { desc='Reload config' })
 vim.keymap.set("n", "<leader>g", vim.lsp.buf.references, { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>ns", ':noh<CR>', { desc='Cancel search' })
 vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Show diagnostic' })
 
 vim.api.nvim_set_keymap('t','<Esc>','<C-\\><C-n>',{ noremap=true,silent=true })
