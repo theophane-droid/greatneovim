@@ -7,19 +7,25 @@ require('packer').startup(function(use)
     -- Packer itself
     use 'wbthomason/packer.nvim'
 
+    -- show marks 
+    use 'kshenoy/vim-signature'
+
     -- File explorer
     use {
-        'nvim-tree/nvim-tree.lua',
-        requires = { 'nvim-tree/nvim-web-devicons' }, -- file-type icons
-        config = function()
-            require('nvim-tree').setup {
-                view = { width = 50, relativenumber = true},
-                renderer = { group_empty = true },
-                filters  = { dotfiles = true },
-            }
-        end
-    }
+      'nvim-tree/nvim-tree.lua',
+      requires = { 'nvim-tree/nvim-web-devicons' },
+      config = function()
+        local tree = require("nvim-tree")
+        local api  = require("nvim-tree.api")
 
+        tree.setup {
+          view     = { width = 50, relativenumber = true },
+          renderer = { group_empty = true },
+          filters  = { dotfiles = true },
+        }
+
+      end
+    }
     -- Status line
     use {
         'nvim-lualine/lualine.nvim',
@@ -295,5 +301,14 @@ vim.keymap.set("n", "<leader>ln", function()
 end, { desc = "Toggle line numbers" })
 
 
+-- Escape term
 vim.api.nvim_set_keymap('t','<Esc>','<C-\\><C-n>',{ noremap=true,silent=true })
+
+-- Ctrl + l to center the cursor
+vim.keymap.set("n", "<C-l>", "zz", { noremap = true, silent = true })
+
+-- Center the cursor before scroll
+vim.keymap.set("n", "<C-u>", "<C-u>zz", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-d>", "<C-d>zz", { noremap = true, silent = true })
+
 
