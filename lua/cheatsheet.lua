@@ -68,11 +68,13 @@ local entries = {
   row(" --- MISC --- "),
   row("D / A", "Del to EOL / Append at EOL"),
   row("ciw", "Change inner word"),
-  row("q<r> / @<r>", "Record / Play macro"),
-  row("<cnt>@<r>", "Play macro count times"), row(""),
-  row("Close with :q"),
+  row("q<r>", "Start recording macro (register r)"),
+  row("q", "Stop recording macro"),
+  row("@<r>", "Play macro from register r"),
+  row("<n>@<r>", "Play macro n times"),
+  row(""),
+  row("Close with <space>cs"),
 }
-
 ---@param list string[] @entries
 ---@param query string @search query
 local function filter_entries(list, query)
@@ -117,16 +119,16 @@ function M.show()
   vim.bo[cheatsheet_buf].filetype = 'markdown'
   vim.bo[cheatsheet_buf].modifiable = false
 
-  vim.defer_fn(function()
-    vim.ui.input({ prompt = "Search cheatsheet: " }, function(input)
-      if input == nil then return end
-      local filtered = filter_entries(entries, input)
-      vim.bo[cheatsheet_buf].modifiable = true
-      vim.api.nvim_buf_set_lines(cheatsheet_buf, 0, -1, false, filtered)
-      vim.bo[cheatsheet_buf].modifiable = false
-      vim.api.nvim_win_set_height(cheatsheet_win, #filtered + 2)
-    end)
-  end, 100)
+  -- vim.defer_fn(function()
+  --   vim.ui.input({ prompt = "Search cheatsheet: " }, function(input)
+  --     if input == nil then return end
+  --     local filtered = filter_entries(entries, input)
+  --     vim.bo[cheatsheet_buf].modifiable = true
+  --     vim.api.nvim_buf_set_lines(cheatsheet_buf, 0, -1, false, filtered)
+  --     vim.bo[cheatsheet_buf].modifiable = false
+  --     vim.api.nvim_win_set_height(cheatsheet_win, #filtered + 2)
+  --   end)
+  -- end, 100)
 end
 
 return M
