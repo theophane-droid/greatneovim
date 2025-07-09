@@ -1,110 +1,114 @@
+
 -- ============================================================================
--- BUILT-IN CHEATSHEET
+-- BUILT-IN CHEATSHEET (clean two‑column view)
+-- Call with :lua require("vim_cheatsheet").show()
 -- ============================================================================
 local M = {}
-function M.show()
-    local c = {
-        " --- VIM / NEOVIM CHEATSHEET --- ",
-        " ",
-        " --- NAVIGATION --- ",
-        " h, j, k, l        : Left, Down, Up, Right",
-        " w, b, e           : Word forward/back, to word end",
-        " 0, ^, $           : Line start (with/without indent), Line end",
-        " gg, G             : Top, Bottom of file",
-        " f<char>, t<char>  : Find char (on / before)",
-        " Ctrl+o, Ctrl+i    : Jump back / forward",
-        " ",
-        " --- EDITING --- ",
-        " i, a, o, O        : Insert (before/after cursor, new line)",
-        " x                 : Delete char under cursor",
-        " dw, dd, D         : Delete word, line, to EOL",
-        " c<motion>, cc     : Change with motion, change line",
-        " s                 : Substitute char (delete & insert)",
-        " r<char>           : Replace single char",
-        " yy, yw, y<motion> : Yank line, word, with motion",
-        " p, P              : Paste (after / before)",
-        " u, Ctrl+r         : Undo, Redo",
-        " .                 : Repeat last command",
-        " ",
-        " --- MODES --- ",
-        " v, V, Ctrl+v      : Visual char, Visual line, Visual block",
-        " :                 : Command-line mode",
-        " ",
-        " --- EX COMMANDS (:) --- ",
-        " :w                : Write file",
-        " :q                : Quit",
-        " :wq, :x           : Write & Quit",
-        " :e <file>         : Open file",
-        " :sp, :vs          : Horizontal / Vertical split",
-        " /pattern          : Search (n/N next/prev)",
-        " :%s/old/new/g     : Replace all occurrences",
-        " :help <topic>     : Help (e.g. :help motion)",
-        " ",
-        " --- PLUGINS & SHORTCUTS --- ",
-        " <Leader>w         : Save file",
-        " <Leader>q         : Quit Neovim",
-        " <Leader>x         : Save & Quit",
-        " <Leader>e         : Toggle NvimTree",
-        " <Leader>ff        : Find files (Telescope)",
-        " <Leader>fg        : Live grep (Telescope)",
-        " <Leader>fb        : List buffers",
-        " <Leader>ns        : Stop search",
-        " <Leader>n         : Toggle relative line numbers",
-        " <Leader>ln        : Toggle line numbers",
-        " gl                : Show actual diagnostic",
-        " gd                : Go to definition (LSP)",
-        " gr                : Go to references (LSP)",
-        " K                 : Hover docs (LSP)",
-        " <Leader>rn        : Rename symbol (LSP)",
-        " <Leader>ca        : Code action (LSP)",
-        " [d, ]d            : Prev / Next diagnostic",
-        " <Leader>f         : Format file (LSP)",
-        " ",
-        " --- WINDOW NAVIGATION --- ",
-        " Ctrl+h/j/k/l      : Move between windows",
-        " Ctrl+Arrow        : Resize windows",
-        " <Leader>h/l       : Decrease / Increase width",
-        " <Leader>k/j       : Increase / Decrease height",
-        " ",
-        " --- INDENT / DEDENT --- ",
-        " Visual mode (v) or visual line (V):",
-        "   Indent selection   : '>'",
-        "   Dedent selection   : '<'",
-        " Tip: Select lines with V, then > or <, repeat with '.'",
-        " ",
-        " --- COMMENT / UNCOMMENT (Comment.nvim) --- ",
-        " Normal mode         : gcc  (toggle line)",
-        " Visual mode         : gc   (toggle selection)",
-        " ",
-        " --- UNDO & CHAR SEARCH --- ",
-        " u                  : Undo last action",
-        " fX / tX            : Find char X / before X in line",
-        " dfX / dtX          : Delete up to & incl./excl. X",
-        " ;  ,               : Repeat / reverse last f/t search",
-        " ",
-        " --- MISC --- ",
-        " D                  : Delete to the end of line",
-        " A                  : Edit at the end of line",
-        " ciw                : Change inner word",
-        " ",
-        " --- LSP INFO --- ",
-        " Ensure servers are installed via Mason (:Mason).",
-        " ",
-        " --- MACROS --- ",
-        " q<reg> / @<reg>    : Record / play macro (e.g. qa, @a)",
-        " <count>@<reg>      : Play macro count times",
-        " ",
-        " Close this window with :q ",
-    }
 
+-- width of each column (including padding)
+local COL = 38            -- total width = 2*COL + 1 gap
+local GAP = " "
+
+---@param l string
+---@param r string
+local function row(l, r)
+  r = r or ""
+  return string.format("%-" .. COL .. "s%s%-" .. COL .. "s", l, GAP, r)
+end
+
+local entries = {
+  row(" --- VIM / NEOVIM CHEATSHEET --- "),
+  row(""),
+
+  row(" --- NAVIGATION --- "),
+  row("h j k l",                 "Left  Down  Up  Right"),
+  row("w  b  e",                 "Word fwd / back / end"),
+  row("0 ^ $",                   "Line start / indented / end"),
+  row("gg / G",                  "Top / Bottom of file"),
+  row("fX / tX",                 "Find / Till char X"),
+  row("Ctrl+o / Ctrl+i",         "Jump back / forward"),
+  row(""),
+
+  row(" --- EDITING --- "),
+  row("i a o O",                 "Insert modes"),
+  row("x / s",                   "Del / Substitute char"),
+  row("dw dd D",                 "Del word, line, to EOL"),
+  row("c<motion> / cc",          "Change with motion / line"),
+  row("r<char>",                 "Replace single char"),
+  row("yy yw y<motion>",         "Yank line, word, motion"),
+  row("p / P",                   "Paste after / before"),
+  row("u / Ctrl+r",              "Undo / Redo"),
+  row(".",                       "Repeat last command"),
+  row(""),
+
+  row(" --- VISUAL & SEARCH --- "),
+  row("v V ^V",                  "Visual char / line / block"),
+  row("* / #",                   "Search next / prev of selection"),
+  row(":",                        "Command‑line mode"),
+  row(""),
+
+  row(" --- EX COMMANDS (:) --- "),
+  row(":w / :q / :wq",           "Write / Quit / Write+Quit"),
+  row(":e <file>",               "Open file"),
+  row(":sp / :vs",               "Split horizontal / vertical"),
+  row("/pat  n/N",               "Search pattern next / prev"),
+  row(":%s/old/new/g",           "Replace all"),
+  row(":help <topic>",           "Open help"),
+  row(""),
+
+  row(" --- PLUGIN SHORTCUTS --- "),
+  row("<L>w / q / x",            "Save / Quit / Save+Quit"),
+  row("<L>e",                    "Toggle NvimTree"),
+  row("<L>ff / fg",              "Find files / Live grep"),
+  row("<L>fb",                   "Buffer list"),
+  row("<L>ns",                   "Stop hlsearch"),
+  row("<L>n / ln",               "Toggle rel / abs numbers"),
+  row("gl gd gr",                "Diagnostics / Def / Refs (LSP)"),
+  row("K / <L>rn",               "Hover / Rename (LSP)"),
+  row("<L>ca / f",               "Code action / Format"),
+  row("[d  ]d",                  "Prev / Next diagnostic"),
+  row(""),
+
+  row(" --- WINDOWS --- "),
+  row("Ctrl+h j k l",            "Move between windows"),
+  row("Ctrl+Arrows",             "Resize windows"),
+  row("<L>h / l",                "Dec / Inc width"),
+  row("<L>k / j",                "Inc / Dec height"),
+  row(""),
+
+  row(" --- INDENT --- "),
+  row("V > / <",                 "Indent / Dedent visual"),
+  row("'.'",                     "Repeat last action"),
+  row(""),
+
+  row(" --- COMMENT --- "),
+  row("gcc",                     "Toggle line comment"),
+  row("gc  (visual)",            "Toggle selection comment"),
+  row(""),
+
+  row(" --- MISC --- "),
+  row("D / A",                   "Del to EOL / Append at EOL"),
+  row("ciw",                     "Change inner word"),
+  row("q<r> / @<r>",             "Record / Play macro"),
+  row("<cnt>@<r>",               "Play macro count times"),
+  row(""),
+
+  row("Close with :q"),
+}
+
+function M.show()
     local buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, c)
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, entries)
+
+
+    local editor_width = vim.o.columns
+    local win_width = 80
     vim.api.nvim_open_win(buf, true, {
         relative = 'editor',
-        row = 5,
-        col = 5,
-        width = 80,
-        height = #c + 2,
+        row = 3,
+        col = editor_width - win_width - 2, -- padding right
+        width = win_width,
+        height = #entries  + 2,
         border = 'single',
         style = 'minimal',
     })
