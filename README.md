@@ -42,5 +42,11 @@ set -ga terminal-overrides ",xterm-256color:Tc"
 set -g mouse on
 
 bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
+
+# add vim like shortcuts
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
 ```
 
