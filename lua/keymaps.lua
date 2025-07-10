@@ -108,7 +108,7 @@ end, { desc = "Show Vim/Neovim Cheatsheet" })
 vim.cmd.colorscheme 'dracula'
 vim.keymap.set('n','<leader>cs',':Cheatsheet<CR>', { desc='Show Cheatsheet' })
 vim.keymap.set('n','<leader>n', ':set invrelativenumber<CR>', { desc='Toggle relativenumber' })
-vim.keymap.set('n','<leader>t', ':terminal<CR>', { desc='Open terminal' })
+vim.keymap.set('n','<leader>t', ToggleTerminal, { desc='Open terminal' })
 vim.keymap.set('n','<leader>r', ':luafile $MYVIMRC<CR>', { desc='Reload config' })
 vim.keymap.set('n', "<leader>g", vim.lsp.buf.references, { noremap = true, silent = true })
 vim.keymap.set('n', "<leader>ns", ':noh<CR>', { desc='Cancel search',  silent = true })
@@ -130,13 +130,13 @@ vim.keymap.set("n", "<C-a>", "ggVG", { noremap = true, silent = true })
 
 -- No lines numbers
 vim.keymap.set("n", "<leader>ln", function()
-  if vim.wo.number then
-    vim.wo.number = false
-    vim.wo.relativenumber = false
-  else
-    vim.wo.number = true
-    vim.wo.relativenumber = true
-  end
+if vim.wo.number then
+vim.wo.number = false
+vim.wo.relativenumber = false
+else
+vim.wo.number = true
+vim.wo.relativenumber = true
+end
 end, { desc = "Toggle line numbers" })
 
 
@@ -154,11 +154,14 @@ vim.keymap.set("n", "<C-d>", "<C-d>zz", { noremap = true, silent = true })
 
 -- Add conf opening shortcut
 vim.api.nvim_create_user_command('Conf', function()
-  vim.cmd('edit ~/.config/nvim')
+vim.cmd('edit ~/.config/nvim')
 end, {})
 
 vim.api.nvim_create_user_command('Config', function()
-  vim.cmd('edit ~/.config/nvim')
+vim.cmd('edit ~/.config/nvim')
 end, {})
 
 vim.keymap.set('n','<leader>!',':Hardtime toggle<CR>', { desc='Toggle hardtime' })
+
+
+
