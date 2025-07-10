@@ -31,3 +31,14 @@ ssh -X user@host
 
 MobaXterm works as an X11 client, but PuTTY does not.
 
+# Tmux conf
+
+Append this at the end of the `~/.tmux/conf` file : 
+
+```
+set-option -sa terminal-overrides ',*:Tc'
+set -g default-terminal "xterm-256color"
+set -ga terminal-overrides ",xterm-256color:Tc"
+set -g mouse on
+```
+
