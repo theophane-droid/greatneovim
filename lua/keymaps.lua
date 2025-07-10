@@ -118,6 +118,8 @@ vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Show diagnostic' 
 vim.keymap.set('v', "y", '"+y', opts)
 vim.keymap.set("n", "p", '"+p', opts)
 vim.keymap.set("n", "P", '"+P', opts)
+vim.keymap.set({ "n", "v" }, "d", '"+d')
+vim.keymap.set({ "n", "v" }, "<leader>y", '"+y')
 
 vim.keymap.set("i", "<C-v>", '<C-r>+', opts)
 
