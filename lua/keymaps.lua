@@ -33,7 +33,7 @@ vim.keymap.set('n', '<leader>e', function()
 end, { desc = 'Toggle NvimTree with resize' })
 
 vim.keymap.set('n','<leader>ff',':Telescope find_files<CR>',{ desc='Find files' })
-vim.keymap.set('n','<leader>fg',':Telescope live_grep<CR>', { desc='Live grep' })
+vim.keymap.set('n','<leader>/',':Telescope live_grep<CR>', { desc='Live grep' })
 vim.keymap.set('n','<leader>fb',':Telescope buffers<CR>',   { desc='Buffers' })
 vim.keymap.set('n','<leader>fh',':Telescope help_tags<CR>', { desc='Help tags' })
 

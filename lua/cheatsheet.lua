@@ -46,7 +46,7 @@ local entries = {
   row(" --- PLUGIN SHORTCUTS --- "),
   row("<L>w / q / x", "Save / Quit / Save+Quit"),
   row("<L>e", "Toggle NvimTree"),
-  row("<L>ff / fg", "Find files / Live grep"),
+  row("<L>ff / /", "Find files / Live grep"),
   row("<L>fb", "Buffer list"),
   row("<L>ns", "Stop hlsearch"),
   row("<L>n / ln", "Toggle rel / abs numbers"),
