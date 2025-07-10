@@ -58,7 +58,7 @@ require('packer').startup(function(use)
     -- hardtime for nvim command help
     use {
       "m4xshen/hardtime.nvim",
-      requires = { "nvim-lua/plenary.nvim", "nvim-lua/popup.nvim" },
+      requires = { "MunifTanjim/nui.nvim" },
       config = function()
         require("hardtime").setup()
       end
@@ -127,6 +127,8 @@ require('packer').startup(function(use)
           " ",
           "                  ✨ Hello, beauty! ✨",
           "     What amazing project will you start today?",
+          " ",
+          "     Help with command workflow : https://m4xshen.dev/posts/vim-command-workflow",
           " ",
           "       GitHub: https://github.com/theophane-droid",
           "       OSS117 quotes: https://oss117quotes.xyz/",

@@ -72,6 +72,7 @@ local entries = {
   row("q", "Stop recording macro"),
   row("@<r>", "Play macro from register r"),
   row("<n>@<r>", "Play macro n times"),
+  row("<space>!", "Toogle hardtime"),
   row(""),
   row("Close with <space>cs"),
 }
