@@ -122,6 +122,7 @@ vim.keymap.set({ "v" }, "d", '"+d')
 vim.keymap.set({ "n", "v" }, "<leader>y", '"+y')
 vim.keymap.set("n", "dd", '"+dd', opts)
 vim.keymap.set("n", "yy", '"+yy', opts)
+vim.keymap.set("n", "dap", '"+dap', opts)
 
 vim.keymap.set("i", "<C-v>", '<C-r>+', opts)
 

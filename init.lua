@@ -172,7 +172,7 @@ vim.opt.hlsearch      = true
 vim.opt.ignorecase    = true
 vim.opt.smartcase     = true
 vim.opt.timeoutlen    = 500
-
+vim.o.guicursor = "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50"
 
 -- ============================================================================
 -- Keymaps add
