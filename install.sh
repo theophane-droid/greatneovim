@@ -22,6 +22,8 @@ cd ..
 echo "[4/$total] Creating config"
 mkdir -p ~/.config/nvim/plugin
 cp ./init.lua ~/.config/nvim/ 2>/dev/null || true
+rm -rf ~/.config/nvim/lua || true
+cp -r ./lua ~/.config/nvim/ 2>/dev/null || true
 
 echo "[5/$total] Installing packer"
 PACKER_DIR="$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
