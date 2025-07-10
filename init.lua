@@ -55,7 +55,14 @@ require('packer').startup(function(use)
             }
         end
     }
-
+    -- hardtime for nvim command help
+    use {
+      "m4xshen/hardtime.nvim",
+      requires = { "nvim-lua/plenary.nvim", "nvim-lua/popup.nvim" },
+      config = function()
+        require("hardtime").setup()
+      end
+    }
     -- Completion
     use 'hrsh7th/nvim-cmp'
     use 'hrsh7th/cmp-nvim-lsp'
@@ -164,4 +171,20 @@ vim.opt.ignorecase    = true
 vim.opt.smartcase     = true
 vim.opt.timeoutlen    = 500
 
+
+-- ============================================================================
+-- Keymaps add
+-- ============================================================================
 require('keymaps')
+
+
+-- ============================================================================
+-- Config edit shortcut 
+-- ============================================================================
+vim.api.nvim_create_user_command('Conf', function()
+  vim.cmd('edit ~/.config/nvim')
+end, {})
+
+vim.api.nvim_create_user_command('Config', function()
+  vim.cmd('edit ~/.config/nvim')
+end, {})
