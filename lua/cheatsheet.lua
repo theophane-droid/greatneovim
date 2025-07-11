@@ -15,6 +15,7 @@ end
 
 local entries = {
   row(" --- VIM / NEOVIM CHEATSHEET --- "), row(""),
+  row("<L> = Probably <space>"),
   row(" --- NAVIGATION --- "),
   row("h j k l", "Left  Down  Up  Right"),
   row("w  b  e", "Word fwd / back / end"),
@@ -72,9 +73,11 @@ local entries = {
   row("q", "Stop recording macro"),
   row("@<r>", "Play macro from register r"),
   row("<n>@<r>", "Play macro n times"),
-  row("<space>!", "Toogle hardtime"),
+  row("<L>!", "Toogle hardtime"),
+  row("<L>i", "Select inner indent block"),
+  row("<L>o", "Select outer indent block"),
   row(""),
-  row("Close with <space>cs"),
+  row("Close with <L>cs"),
 }
 ---@param list string[] @entries
 ---@param query string @search query
