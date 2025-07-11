@@ -180,5 +180,8 @@ for i = 1, 9 do
     { desc = "Run launch.json config " .. idx, noremap = true, silent = true }
   )
 end
-vim.keymap.set("n", "<leader>gg", require("terminal").open_launch,
+vim.keymap.set("n", "<leader>ge", require("terminal").open_launch,
   { desc = "Ouvrir launch.json", noremap = true, silent = true })
+
+vim.keymap.set("n", "<leader>gg", require("terminal").run_menu,
+  { desc = "Open launch menu", noremap = true, silent = true })
