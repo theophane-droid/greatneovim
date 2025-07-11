@@ -168,3 +168,17 @@ local selectblock = require("selectblock")
 -- Select block
 vim.keymap.set("n", "<leader>i", selectblock.select_inner_indent_block, { desc = "Select inner indent block" })
 vim.keymap.set("n", "<leader>o", selectblock.select_outer_indent_block, { desc = "Select outer indent block" })
+
+
+-- Launch conf
+for i = 1, 9 do
+  local idx = i
+  vim.keymap.set(
+    "n",
+    ("<leader>g%d"):format(idx),
+    function() require("terminal").run_launch(idx) end,
+    { desc = "Run launch.json config " .. idx, noremap = true, silent = true }
+  )
+end
+vim.keymap.set("n", "<leader>gg", require("terminal").open_launch,
+  { desc = "Ouvrir launch.json", noremap = true, silent = true })

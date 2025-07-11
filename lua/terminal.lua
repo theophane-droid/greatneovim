@@ -1,4 +1,8 @@
-local term_buf, term_win, term_height
+local term_buf, term_win, term_height, term_job
+
+-- ============================================================================
+-- TERMINAL TOGGLE
+-- ============================================================================
 
 vim.api.nvim_create_autocmd("WinResized", {
   callback = function()
@@ -41,9 +45,73 @@ function ToggleTerminal()
   })
 
   if vim.api.nvim_buf_get_option(term_buf, "buftype") ~= "terminal" then
-    vim.fn.termopen(os.getenv("SHELL"))
+    term_job = vim.fn.termopen(os.getenv("SHELL"))
     vim.api.nvim_buf_set_option(term_buf, "filetype", "terminal")
   end
 end
 
 vim.keymap.set("n", "<leader>t", ToggleTerminal, { noremap = true, silent = true })
+
+-- ============================================================================
+-- TERMINAL TOGGLE
+-- ============================================================================
+
+local function ensure_terminal()
+  if not term_win or not vim.api.nvim_win_is_valid(term_win) then
+    ToggleTerminal()
+  elseif vim.api.nvim_get_current_win() ~= term_win then
+    vim.api.nvim_set_current_win(term_win)
+  end
+  return term_job
+end
+
+local function run_launch(idx)
+  local launch = vim.fn.getcwd() .. "/launch.json"
+
+  if vim.fn.filereadable(launch) == 0 then
+    vim.fn.writefile({
+        '{',
+          '\t"configurations": [',
+            '\t\t{ "name": "run1", "cmd": "echo run 1" },',
+            '\t\t{ "name": "run2", "cmd": "echo run 2" },',
+            '\t\t{ "name": "run3", "cmd": "echo run 3" }',
+          '\t]',
+        '}',
+    }, launch)
+  -- todo : ajouter une ligne dans gitignore
+  end
+
+  local cfgs = vim.fn.json_decode(table.concat(vim.fn.readfile(launch), "\n")).configurations or {}
+  local cfg  = cfgs[idx] or cfgs[1]
+  local cmd  = (cfg and (cfg.cmd or cfg.command)) or "echo 'no cmd defined'"
+
+  vim.api.nvim_chan_send(ensure_terminal(), cmd .. "\n")
+end
+
+
+local function open_launch()
+  local launch = vim.fn.getcwd() .. "/launch.json"
+
+  if vim.fn.filereadable(launch) == 0 then
+    vim.fn.writefile({
+        '{',
+          '\t"configurations": [',
+            '\t\t{ "name": "run1", "cmd": "echo run 1" },',
+            '\t\t{ "name": "run2", "cmd": "echo run 2" },',
+            '\t\t{ "name": "run3", "cmd": "echo run 3" }',
+          '\t]',
+        '}',
+    }, launch)
+  end
+
+  vim.cmd("edit " .. vim.fn.fnameescape(launch))
+end
+
+
+local M = {
+    run_launch = run_launch,
+    toggle_terminal = ToggleTerminal,
+    open_launch = open_launch,
+}
+
+return M
