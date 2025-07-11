@@ -70,6 +70,7 @@ local entries = {
   row("--- RUN & DEBUG ---"),
   row("<L>ge", "Open launch.json conf"),
   row("<L>gg", "Open run menu"),
+  row("<L>gt", "Open term list"),
   row("<L>g1", "Run first launch conf in terminal"),
   row("<L>gX", "Run conf X in terminal"), row(""),
   row(" --- MISC --- "),
