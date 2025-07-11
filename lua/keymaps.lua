@@ -164,4 +164,7 @@ end, {})
 vim.keymap.set('n','<leader>!',':Hardtime toggle<CR>', { desc='Toggle hardtime' })
 
 
-
+local selectblock = require("selectblock")
+-- Select block
+vim.keymap.set("n", "<leader>i", selectblock.select_inner_indent_block, { desc = "Select inner indent block" })
+vim.keymap.set("n", "<leader>o", selectblock.select_outer_indent_block, { desc = "Select outer indent block" })
