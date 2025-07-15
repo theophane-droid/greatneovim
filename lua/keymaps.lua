@@ -11,16 +11,16 @@ vim.keymap.set('n','<C-k>','<C-w>k',{ desc='Up window' })
 vim.keymap.set('n','<C-l>','<C-w>l',{ desc='Right window' })
 
 -- Window resize (Ctrl+Arrows)
-vim.keymap.set('n','<C-Up>',   ':resize +2<CR>',           { desc='Increase height' })
-vim.keymap.set('n','<C-Down>', ':resize -2<CR>',           { desc='Decrease height' })
+vim.keymap.set('n','<C-Up>',   ':resize +4<CR>',           { desc='Increase height' })
+vim.keymap.set('n','<C-Down>', ':resize -4<CR>',           { desc='Decrease height' })
 vim.keymap.set('n','<C-Left>', ':vertical resize -4<CR>',  { desc='Decrease width' })
 vim.keymap.set('n','<C-Right>',':vertical resize +4<CR>',  { desc='Increase width' })
 
 -- Window resize with leader
 vim.keymap.set('n','<leader>h',':vertical resize -4<CR>',  { desc='Decrease width' })
 vim.keymap.set('n','<leader>l',':vertical resize +4<CR>',  { desc='Increase width' })
-vim.keymap.set('n','<leader>k',':resize +2<CR>',           { desc='Increase height' })
-vim.keymap.set('n','<leader>j',':resize -2<CR>',           { desc='Decrease height' })
+vim.keymap.set('n','<leader>k',':resize +4<CR>',           { desc='Increase height' })
+vim.keymap.set('n','<leader>j',':resize -4<CR>',           { desc='Decrease height' })
 
 -- Save / quit
 vim.keymap.set('n','<leader>w',':w<CR>', { desc='Save' })
