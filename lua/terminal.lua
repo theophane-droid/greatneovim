@@ -1,11 +1,12 @@
 local term_height = nil
-local terminals   = {} -- [idx] = { win, buf, job }
+local terminals   = {}
+local last_idx    = 1
 
 -- keep height on resize
 vim.api.nvim_create_autocmd("WinResized", {
   callback = function()
     for _, t in pairs(terminals) do
-      if vim.api.nvim_win_is_valid(t.win) then
+      if t.win and vim.api.nvim_win_is_valid(t.win) then
         term_height = vim.api.nvim_win_get_height(t.win)
         break
       end
@@ -13,18 +14,11 @@ vim.api.nvim_create_autocmd("WinResized", {
   end,
 })
 
--- open / focus ---------------------------------------------------------------
-local function open_terminal(idx)
-  if terminals[idx] and vim.api.nvim_win_is_valid(terminals[idx].win) then
-    vim.api.nvim_set_current_win(terminals[idx].win)
-    return terminals[idx]
-  end
-
-  local buf = vim.api.nvim_create_buf(false, true)
-  local h   = term_height or math.floor(vim.o.lines / 3)
-  h         = math.min(h, vim.o.lines - 2)
-
-  local win = vim.api.nvim_open_win(buf, true, {
+-- helpers --------------------------------------------------------------------
+local function create_window(buf, idx)
+  local h = term_height or math.floor(vim.o.lines / 3)
+  h       = math.min(h, vim.o.lines - 2)
+  return vim.api.nvim_open_win(buf, true, {
     relative  = "editor",
     row       = vim.o.lines - h - 1,
     col       = 0,
@@ -35,33 +29,73 @@ local function open_terminal(idx)
     title     = (" Term %d "):format(idx),
     title_pos = "center",
   })
+end
 
-  local job = vim.fn.termopen(os.getenv("SHELL"))
+-- open / focus ---------------------------------------------------------------
+local function open_terminal(idx)
+  last_idx = idx
+  local t  = terminals[idx]
+
+  if t and vim.api.nvim_buf_is_valid(t.buf) then
+    -- focus existing or recreate window
+    if t.win and vim.api.nvim_win_is_valid(t.win) then
+      vim.api.nvim_set_current_win(t.win)
+    else
+      t.win = create_window(t.buf, idx)
+    end
+    -- restart shell if needed
+    if not t.job or vim.fn.jobwait({ t.job }, 0)[1] ~= -1 then
+      vim.api.nvim_set_current_win(t.win)
+      t.job = vim.fn.termopen(os.getenv("SHELL"))
+    end
+    return t
+  end
+
+  -- new terminal -------------------------------------------------------------
+  local buf = vim.api.nvim_create_buf(false, true)
+  local win = create_window(buf, idx)
   vim.api.nvim_buf_set_option(buf, "filetype", "terminal")
+  local job = vim.fn.termopen(os.getenv("SHELL"))
 
   terminals[idx] = { win = win, buf = buf, job = job }
   return terminals[idx]
 end
 
--- toggle (fixed) -------------------------------------------------------------
+-- toggle ---------------------------------------------------------------------
 local function toggle_terminal(idx)
-  idx = idx or 1
-  local t = terminals[idx]
-
-  if t and vim.api.nvim_win_is_valid(t.win) then
-    if vim.api.nvim_get_current_win() == t.win then
+  if idx then -- explicit index
+    local t = terminals[idx]
+    if t and t.win and vim.api.nvim_win_is_valid(t.win) then
       term_height = vim.api.nvim_win_get_height(t.win)
       vim.api.nvim_win_close(t.win, true)
-      terminals[idx] = nil
+      t.win = nil
     else
-      vim.api.nvim_set_current_win(t.win)
+      open_terminal(idx)
     end
-  else
-    open_terminal(idx)
+    return
   end
+
+  -- global toggle
+  local any_open = false
+  for _, t in pairs(terminals) do
+    if t.win and vim.api.nvim_win_is_valid(t.win) then
+      any_open = true
+      term_height = vim.api.nvim_win_get_height(t.win)
+      vim.api.nvim_win_close(t.win, true)
+      t.win = nil
+    end
+  end
+  if not any_open then open_terminal(last_idx) end
 end
 
-local function ensure_terminal(idx) return open_terminal(idx or 1).job end
+local function ensure_terminal(idx)
+  idx = idx or 1
+  local t = open_terminal(idx)
+  if not t.job or vim.fn.jobwait({ t.job }, 0)[1] ~= -1 then
+    t.job = vim.fn.termopen(os.getenv("SHELL"))
+  end
+  return t.job
+end
 
 -- launch helpers -------------------------------------------------------------
 local function launch_file() return vim.fn.getcwd() .. "/launch.json" end
