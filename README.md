@@ -50,3 +50,9 @@ bind k select-pane -U
 bind l select-pane -R
 ```
 
+# Rebuild an AppImage distribution
+
+```
+chmod +x ./build.sh
+./build.sh
+```
