@@ -122,17 +122,35 @@ require('packer').startup(function(use)
     use 'dracula/vim'
 
     -- Yank history    
-    require("neoclip").setup({
-      default_register = "+",
-      on_paste = { set_reg = true, close_telescope = true },
-      initial_mode = "normal",
-      keys = {
-        telescope = {
-          i = { paste = "<CR>", paste_behind = "<S-CR>" },
-          n = { paste = "<CR>", paste_behind = "<S-CR>" },
-        },
-      },
-    })
+	use {
+	  "AckslD/nvim-neoclip.lua",
+	  requires = {
+	    { "nvim-telescope/telescope.nvim" },
+	    { "nvim-lua/plenary.nvim" },
+	  },
+	  config = function()
+	    require("neoclip").setup({
+	      default_register = "+",
+	      on_paste = { set_reg = true, close_telescope = true },
+	      initial_mode = "normal",
+	      keys = {
+		telescope = {
+		  i = { paste = "<CR>", paste_behind = "<S-CR>" },
+		  n = { paste = "<CR>", paste_behind = "<S-CR>" },
+		},
+	      },
+	    })
+	    pcall(require("telescope").load_extension, "neoclip")
+	  end
+	}
+
+    -- Auto pair
+    use {
+      "windwp/nvim-autopairs",
+      config = function()
+        require("nvim-autopairs").setup {}
+      end
+    }
 
 -- Gardez les keymaps globaux tels quels, et laissez les touches par défaut de neoclip/telescope.
 
