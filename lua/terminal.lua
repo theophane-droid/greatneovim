@@ -46,7 +46,8 @@ local function open_terminal(idx)
     -- restart shell if needed
     if not t.job or vim.fn.jobwait({ t.job }, 0)[1] ~= -1 then
       vim.api.nvim_set_current_win(t.win)
-      t.job = vim.fn.termopen(os.getenv("SHELL"))
+      local shell = vim.fn.executable("nu") == 1 and "nu" or os.getenv("SHELL")
+      t.job = vim.fn.termopen(shell)
     end
     return t
   end
@@ -55,7 +56,9 @@ local function open_terminal(idx)
   local buf = vim.api.nvim_create_buf(false, true)
   local win = create_window(buf, idx)
   vim.api.nvim_buf_set_option(buf, "filetype", "terminal")
-  local job = vim.fn.termopen(os.getenv("SHELL"))
+
+  local shell = vim.fn.executable("nu") == 1 and "nu" or os.getenv("SHELL")
+  local job = vim.fn.termopen(shell)
 
   terminals[idx] = { win = win, buf = buf, job = job }
   return terminals[idx]
@@ -92,7 +95,8 @@ local function ensure_terminal(idx)
   idx = idx or 1
   local t = open_terminal(idx)
   if not t.job or vim.fn.jobwait({ t.job }, 0)[1] ~= -1 then
-    t.job = vim.fn.termopen(os.getenv("SHELL"))
+    local shell = vim.fn.executable("nu") == 1 and "nu" or os.getenv("SHELL")
+    t.job = vim.fn.termopen(shell)
   end
   return t.job
 end
