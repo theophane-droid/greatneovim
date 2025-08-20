@@ -188,3 +188,9 @@ vim.keymap.set("n", "<leader>gg", require("terminal").run_menu,
 
 vim.keymap.set("n", "<leader>gt", require("terminal").terminal_menu,
   { desc = "Open term menu", noremap = true, silent = true })
+
+
+-- Open copy-paste history
+vim.keymap.set('n','<leader>H', function()
+  require('telescope').extensions.neoclip.plus()
+end, { desc = 'Clipboard history' })

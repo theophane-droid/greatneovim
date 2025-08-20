@@ -121,6 +121,21 @@ require('packer').startup(function(use)
     -- Theme
     use 'dracula/vim'
 
+    -- Yank history    
+    require("neoclip").setup({
+      default_register = "+",
+      on_paste = { set_reg = true, close_telescope = true },
+      initial_mode = "normal",
+      keys = {
+        telescope = {
+          i = { paste = "<CR>", paste_behind = "<S-CR>" },
+          n = { paste = "<CR>", paste_behind = "<S-CR>" },
+        },
+      },
+    })
+
+-- Gardez les keymaps globaux tels quels, et laissez les touches par défaut de neoclip/telescope.
+
     -- Welcome screen
     use {
       'goolord/alpha-nvim',
