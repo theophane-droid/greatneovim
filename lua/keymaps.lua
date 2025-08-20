@@ -200,3 +200,17 @@ vim.keymap.set("n", "<C-t>", ":tabnew<CR>",      { noremap = true, silent = true
 vim.keymap.set("n", "<C-c>", ":tabclose<CR>",    { noremap = true, silent = true, desc = "Close current tab" })
 vim.keymap.set("n", "<C-l>", ":tabnext<CR>",     { noremap = true, silent = true, desc = "Next tab" })
 vim.keymap.set("n", "<C-h>", ":tabprevious<CR>", { noremap = true, silent = true, desc = "Previous tab" })
+
+
+-- Auto search
+vim.keymap.set("v", "/", [[y/\V<C-R>=escape(@", '/\')<CR><CR>]], { noremap = true, silent = true })
+vim.keymap.set('v','<leader>/', function()
+  local save = vim.fn.getreg('z')
+  vim.cmd([[normal! "zy]])
+  local text = vim.fn.getreg('z')
+  vim.fn.setreg('z', save)
+  require('telescope.builtin').live_grep({
+    default_text = text,
+    additional_args = function(_) return {'--fixed-strings'} end, -- recherche littérale
+  })
+end, { desc='Live grep (selection)' })
