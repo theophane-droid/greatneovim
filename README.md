@@ -56,3 +56,15 @@ bind l select-pane -R
 chmod +x ./build.sh
 ./build.sh
 ```
+
+
+# Font
+
+
+Need nerd font :
+
+```
+sudo apt install fonts-jetbrains-mono
+```
+
+And in your term choose nerd for example `BrainsMono Nerd Font Mono`.

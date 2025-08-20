@@ -194,3 +194,9 @@ vim.keymap.set("n", "<leader>gt", require("terminal").terminal_menu,
 vim.keymap.set('n','<leader>H', function()
   require('telescope').extensions.neoclip.plus()
 end, { desc = 'Clipboard history' })
+
+-- Tab handling (real Neovim tabs)
+vim.keymap.set("n", "<C-t>", ":tabnew<CR>",      { noremap = true, silent = true, desc = "Open new tab" })
+vim.keymap.set("n", "<C-c>", ":tabclose<CR>",    { noremap = true, silent = true, desc = "Close current tab" })
+vim.keymap.set("n", "<C-l>", ":tabnext<CR>",     { noremap = true, silent = true, desc = "Next tab" })
+vim.keymap.set("n", "<C-h>", ":tabprevious<CR>", { noremap = true, silent = true, desc = "Previous tab" })

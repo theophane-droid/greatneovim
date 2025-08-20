@@ -152,6 +152,58 @@ require('packer').startup(function(use)
       end
     }
 
+use {
+  'nanozuki/tabby.nvim',
+  requires = { 'nvim-tree/nvim-web-devicons' },
+  config = function()
+    local theme = {
+      fill = 'TabLineFill',
+      head = { fg = '#75beff', bg = '#1c1e26', style = 'italic' },
+      current_tab = { fg = '#1c1e26', bg = '#75beff', style = 'italic' },
+      tab = { fg = '#c5cdd9', bg = '#1c1e26', style = 'italic' },
+      tail = { fg = '#75beff', bg = '#1c1e26', style = 'italic' },
+    }
+
+    require('tabby.tabline').set(function(line)
+      return {
+        {
+          line.sep('', theme.head, theme.fill),
+          { '  ', hl = theme.head },
+          line.sep('', theme.head, theme.fill),
+        },
+        line.tabs().foreach(function(tab)
+          local hl = tab.is_current() and theme.current_tab or theme.tab
+          local name = tab.name()
+          local idx = string.find(name, "%[%d")
+          local tab_name = idx and string.sub(name, 1, idx - 1) or name
+          -- indicateur de modification
+          local modified = false
+          for _, win_id in ipairs(require('tabby.module.api').get_tab_wins(tab.id)) do
+            local ok, buf = pcall(vim.api.nvim_win_get_buf, win_id)
+            if ok and vim.api.nvim_buf_get_option(buf, "modified") then modified = true break end
+          end
+          return {
+            line.sep(' ', hl, theme.fill),
+            { (' %d. %s %s '):format(tab.number(), tab_name, modified and '' or ''), hl = hl },
+            -- line.sep('', hl, theme.fill),
+            hl = hl,
+            margin = ' ',
+          }
+        end),
+        line.spacer(),
+        {
+          line.sep('', theme.tail, theme.fill),
+          { '  ', hl = theme.tail },
+          line.sep('', theme.tail, theme.fill),
+        },
+        hl = theme.fill,
+      }
+    end)
+
+    vim.o.showtabline = 2
+  end
+}
+
 -- Gardez les keymaps globaux tels quels, et laissez les touches par défaut de neoclip/telescope.
 
     -- Welcome screen

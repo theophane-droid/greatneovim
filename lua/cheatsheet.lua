@@ -15,7 +15,6 @@ end
 
 local entries = {
   row(" --- VIM / NEOVIM CHEATSHEET --- "), row(""),
-  row("<L> = Probably <space>"),
   row(" --- NAVIGATION --- "),
   row("h j k l", "Left  Down  Up  Right"),
   row("w  b  e", "Word fwd / back / end"),
@@ -83,8 +82,19 @@ local entries = {
   row("<L>!", "Toogle hardtime"),
   row("<L>i", "Select inner indent block"),
   row("<L>o", "Select outer indent block"),
-  row(""),
-  row("Close with <L>cs"),
+  row("<L>H", "Open copy history"), row(""),
+  row(" --- TABS --- "),
+  row(":tabnew / :tabedit", "Open new tab / edit file in new tab"),
+  row(":tabnext / :tabprev", "Next / Previous tab"),
+  row(":tabclose", "Close current tab"),
+  row(":tabs", "List all tabs"),
+  row("gt / gT", "Go to next / previous tab"),
+  row("{n}gt", "Go to tab number n"), row(""),
+  row(" --- TABS (CUSTOM) --- "),
+  row("<C-t>", "Open new tab"),
+  row("<C-c>", "Close current tab"),
+  row("<C-l>", "Next tab"),
+  row("<C-h>", "Previous tab"),
 }
 ---@param list string[] @entries
 ---@param query string @search query
