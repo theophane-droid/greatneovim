@@ -95,7 +95,25 @@ local entries = {
   row("<C-c>", "Close current tab"),
   row("<C-l>", "Next tab"),
   row("<C-h>", "Previous tab"),
-}
+  row(" --- WINDOW MANAGEMENT --- "),
+  row("Ctrl+w w", "Switch to next window"),
+  row("Ctrl+w h/j/k/l", "Move to left/down/up/right window"),
+  row("Ctrl+w t / Ctrl+w b", "Go to top / bottom window"),
+  row("Ctrl+w r", "Rotate windows"),
+  row("Ctrl+w x", "Exchange with adjacent window"),
+  row("Ctrl+w K / H / J / L", "Move window to top/left/bottom/right"),
+  row("Ctrl+w =", "Equalize all splits"),
+  row("Ctrl+w _ / |", "Maximize height / width of current split"),
+  row(":q / :close", "Close current split"),
+  row(":only", "Close all other splits"),
+  row("Ctrl+w o", "Same as :only"),
+  row(":b <n>", "Open buffer n in current split"),
+  row(":sb <n>", "Open buffer n in new split"),
+  row(":vert sb <n>", "Open buffer n in vertical split"),
+  row(":ls", "List all buffers"),
+  row(":bd", "Delete current buffer (keep window)"),
+  row(":h window-moving", "Help on window movement"),
+  row(":h :sb", "Help on opening buffers in splits"),}
 ---@param list string[] @entries
 ---@param query string @search query
 local function filter_entries(list, query)
