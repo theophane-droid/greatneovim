@@ -28,32 +28,45 @@ require('packer').startup(function(use)
     }
     -- Status line
     use {
-        'nvim-lualine/lualine.nvim',
-        requires = { 'nvim-tree/nvim-web-devicons', opt = true },
-        config = function()
-            require('lualine').setup {
-                options = {
-                    icons_enabled = true,
-                    theme = 'auto',
-                    component_separators = { left = '', right = '' },
-                    section_separators   = { left = '', right = '' },
-                    always_last_status = true,
-                    padding = { left = 1, right = 1 },
-                },
-                sections = {
-                    lualine_a = { 'mode' },
-                    lualine_b = { 'branch', 'diff', 'diagnostics' },
-                    lualine_c = { 'filename' },
-                    lualine_x = { 'encoding', 'fileformat', 'filetype' },
-                    lualine_y = { 'progress' },
-                    lualine_z = { 'location' },
-                },
-                inactive_sections = {
-                    lualine_c = { 'filename' },
-                    lualine_x = { 'location' },
-                },
-            }
+      'nvim-lualine/lualine.nvim',
+      requires = { 'nvim-tree/nvim-web-devicons', opt = true },
+      config = function()
+        -- composant custom
+        local function zoom_indicator()
+          local ok, layout = pcall(require, 'layout')  -- adapter le nom si besoin
+          if not ok or not layout.is_zoomed then
+            return ''
+          end
+          if layout.is_zoomed() then
+            return '[ ZOOM ]'
+          end
+          return ''
         end
+
+        require('lualine').setup {
+          options = {
+            icons_enabled = true,
+            theme = 'auto',
+            component_separators = { left = '', right = '' },
+            section_separators   = { left = '', right = '' },
+            always_last_status = true,
+            padding = { left = 1, right = 1 },
+          },
+          sections = {
+            lualine_a = { 'mode' },
+            lualine_b = { 'branch', 'diff', 'diagnostics' },
+            -- on ajoute le zoom avant le filename
+            lualine_c = { zoom_indicator, 'filename' },
+            lualine_x = { 'encoding', 'fileformat', 'filetype' },
+            lualine_y = { 'progress' },
+            lualine_z = { 'location' },
+          },
+          inactive_sections = {
+            lualine_c = { 'filename' },
+            lualine_x = { 'location' },
+          },
+        }
+      end
     }
     -- notify
     use {

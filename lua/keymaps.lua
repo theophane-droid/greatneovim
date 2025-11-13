@@ -216,3 +216,7 @@ vim.keymap.set('v','<leader>/', function()
     additional_args = function(_) return {'--fixed-strings'} end, -- recherche littérale
   })
 end, { desc='Live grep (selection)' })
+
+
+-- Windows layout
+vim.keymap.set("n", "<C-z>", require("layout").toggle_zoom, { noremap = false, silent = false })
