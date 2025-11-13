@@ -1,6 +1,12 @@
 local term_height = nil
 local terminals   = {}
 local last_idx    = 1
+local is_fullscreen = false
+
+-- forward declarations pour la récursion mutuelle
+local open_terminal_with_mappings
+local switch_terminal
+local setup_terminal_mappings
 
 -- keep height on resize
 vim.api.nvim_create_autocmd("WinResized", {
@@ -15,33 +21,54 @@ vim.api.nvim_create_autocmd("WinResized", {
 })
 
 -- helpers --------------------------------------------------------------------
-local function create_window(buf, idx)
-  local h = term_height or math.floor(vim.o.lines / 3)
-  h       = math.min(h, vim.o.lines - 2)
+local function create_window(buf, idx, fullscreen)
+  local h, row
+  local border = "single"
+
+  if fullscreen then
+    h = vim.o.lines - 4
+    row = 1
+    -- border = "single" -- ou nil si vous ne voulez pas de bordure en fullscreen
+  else
+    h = math.floor(vim.o.lines / 3)  -- Toujours 1/3 de l'écran
+    h = math.min(h, vim.o.lines - 2)
+    row = vim.o.lines - h - 1
+  end
+
   return vim.api.nvim_open_win(buf, true, {
     relative  = "editor",
-    row       = vim.o.lines - h - 1,
+    row       = row,
     col       = 0,
     width     = vim.o.columns,
     height    = h,
-    border    = "single",
+    border    = border,
     style     = "minimal",
-    title     = (" Term %d "):format(idx),
+    title     = fullscreen and (" Term %d [Fullscreen] "):format(idx) or (" Term %d "):format(idx),
     title_pos = "center",
   })
 end
 
--- open / focus ---------------------------------------------------------------
+-- Toggle fullscreen ----------------------
+local function toggle_fullscreen(idx)
+  local t = terminals[idx]
+  if not t or not t.win or not vim.api.nvim_win_is_valid(t.win) then return end
+
+  is_fullscreen = not is_fullscreen
+  vim.api.nvim_win_close(t.win, true)
+  t.win = create_window(t.buf, idx, is_fullscreen)
+  vim.api.nvim_set_current_win(t.win)
+end
+
+-- open / ensure terminals ----------------------------------------------------
 local function open_terminal(idx)
   last_idx = idx
-  local t  = terminals[idx]
-
+  local t = terminals[idx]
   if t and vim.api.nvim_buf_is_valid(t.buf) then
     -- focus existing or recreate window
     if t.win and vim.api.nvim_win_is_valid(t.win) then
       vim.api.nvim_set_current_win(t.win)
     else
-      t.win = create_window(t.buf, idx)
+      t.win = create_window(t.buf, idx, is_fullscreen)
     end
     -- restart shell if needed
     if not t.job or vim.fn.jobwait({ t.job }, 0)[1] ~= -1 then
@@ -50,34 +77,53 @@ local function open_terminal(idx)
       t.job = vim.fn.termopen(shell)
     end
     return t
+  else
+    -- new terminal
+    local buf = vim.api.nvim_create_buf(false, true)
+    local win = create_window(buf, idx, is_fullscreen)
+    vim.api.nvim_buf_set_option(buf, "filetype", "terminal")
+    local shell = vim.fn.executable("nu") == 1 and "nu" or os.getenv("SHELL")
+    local job = vim.fn.termopen(shell)
+    terminals[idx] = { win = win, buf = buf, job = job }
+    return terminals[idx]
   end
-
-  -- new terminal -------------------------------------------------------------
-  local buf = vim.api.nvim_create_buf(false, true)
-  local win = create_window(buf, idx)
-  vim.api.nvim_buf_set_option(buf, "filetype", "terminal")
-
-  local shell = vim.fn.executable("nu") == 1 and "nu" or os.getenv("SHELL")
-  local job = vim.fn.termopen(shell)
-
-  terminals[idx] = { win = win, buf = buf, job = job }
-  return terminals[idx]
 end
 
--- toggle ---------------------------------------------------------------------
+-- ces trois fonctions sont définies après la déclaration plus haut -----------
+switch_terminal = function(direction)
+  local current_idx = last_idx
+  local next_idx = current_idx + direction
+  if next_idx < 1 then next_idx = 9 end
+  if next_idx > 9 then next_idx = 1 end
+  open_terminal_with_mappings(next_idx)
+end
+
+setup_terminal_mappings = function(buf, idx)
+  vim.keymap.set('t', '<C-z>', function() toggle_fullscreen(idx) end, { buffer = buf, noremap = true, silent = true })
+  vim.keymap.set('t', '<C-j>', function() switch_terminal(-1) end,    { buffer = buf, noremap = true, silent = true })
+  vim.keymap.set('t', '<C-k>', function() switch_terminal(1) end,     { buffer = buf, noremap = true, silent = true })
+end
+
+open_terminal_with_mappings = function(idx)
+  local t = open_terminal(idx)
+  if t then
+    setup_terminal_mappings(t.buf, idx)
+  end
+  return t
+end
+
 local function toggle_terminal(idx)
-  if idx then -- explicit index
+  if idx then
     local t = terminals[idx]
     if t and t.win and vim.api.nvim_win_is_valid(t.win) then
       term_height = vim.api.nvim_win_get_height(t.win)
       vim.api.nvim_win_close(t.win, true)
       t.win = nil
     else
-      open_terminal(idx)
+      open_terminal_with_mappings(idx)
     end
     return
   end
-
   -- global toggle
   local any_open = false
   for _, t in pairs(terminals) do
@@ -88,7 +134,7 @@ local function toggle_terminal(idx)
       t.win = nil
     end
   end
-  if not any_open then open_terminal(last_idx) end
+  if not any_open then open_terminal_with_mappings(last_idx) end
 end
 
 local function ensure_terminal(idx)
@@ -102,7 +148,10 @@ local function ensure_terminal(idx)
 end
 
 -- launch helpers -------------------------------------------------------------
-local function launch_file() return vim.fn.getcwd() .. "/launch.json" end
+local function launch_file()
+  return vim.fn.getcwd() .. "/launch.json"
+end
+
 local function ensure_launch_file()
   if vim.fn.filereadable(launch_file()) == 0 then
     vim.fn.writefile({
@@ -156,9 +205,14 @@ local function run_menu()
     title_pos = "center",
   })
 
-  local function close() if vim.api.nvim_win_is_valid(win) then vim.api.nvim_win_close(win, true) end end
-  vim.keymap.set("n", "q",      close, { buffer = buf, nowait = true })
-  vim.keymap.set("n", "<Esc>",  close, { buffer = buf, nowait = true })
+  local function close()
+    if vim.api.nvim_win_is_valid(win) then
+      vim.api.nvim_win_close(win, true)
+    end
+  end
+
+  vim.keymap.set("n", "q",     close, { buffer = buf, nowait = true })
+  vim.keymap.set("n", "<Esc>", close, { buffer = buf, nowait = true })
   vim.keymap.set("n", "<CR>", function()
     local l = vim.fn.line(".")
     close()
@@ -169,9 +223,13 @@ end
 -- term switch menu -----------------------------------------------------------
 local function terminal_menu()
   local ids = {}
-  for i = 1, 9 do ids[#ids + 1] = ("Terminal %d"):format(i) end
+  for i = 1, 9 do
+    ids[#ids + 1] = ("Terminal %d"):format(i)
+  end
   vim.ui.select(ids, { prompt = "Select terminal:" }, function(choice)
-    if choice then open_terminal(tonumber(choice:match("%d+"))) end
+    if choice then
+      open_terminal_with_mappings(tonumber(choice:match("%d+")))
+    end
   end)
 end
 
@@ -183,9 +241,10 @@ end
 
 -- exports --------------------------------------------------------------------
 return {
-  toggle_terminal = toggle_terminal,
-  run_launch      = run_launch,
-  run_menu        = run_menu,
-  terminal_menu   = terminal_menu,
-  open_launch     = open_launch,
+  toggle_terminal   = toggle_terminal,
+  run_launch        = run_launch,
+  run_menu          = run_menu,
+  terminal_menu     = terminal_menu,
+  open_launch       = open_launch,
+  toggle_fullscreen = toggle_fullscreen,
 }

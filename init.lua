@@ -62,19 +62,6 @@ require('packer').startup(function(use)
         vim.notify = require("notify")
       end
     }
-    -- hardtime for nvim command help
-    use {
-      "m4xshen/hardtime.nvim",
-      requires = { "MunifTanjim/nui.nvim" },
-      config = function()
-        require("hardtime").setup({
-          notification = true,
-          callback = function(text)
-            vim.notify(text, vim.log.levels.WARN, { title = "Hardtime" })
-          end,
-        })
-      end
-    }
     -- Completion
     use 'hrsh7th/nvim-cmp'
     use 'hrsh7th/cmp-nvim-lsp'
