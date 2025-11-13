@@ -28,9 +28,8 @@ local function create_window(buf, idx, fullscreen)
   if fullscreen then
     h = vim.o.lines - 4
     row = 1
-    -- border = "single" -- ou nil si vous ne voulez pas de bordure en fullscreen
   else
-    h = math.floor(vim.o.lines / 3)  -- Toujours 1/3 de l'écran
+    h = math.floor(vim.o.lines / 3)
     h = math.min(h, vim.o.lines - 2)
     row = vim.o.lines - h - 1
   end
@@ -89,7 +88,6 @@ local function open_terminal(idx)
   end
 end
 
--- ces trois fonctions sont définies après la déclaration plus haut -----------
 switch_terminal = function(direction)
   local current_idx = last_idx
   local next_idx = current_idx + direction
