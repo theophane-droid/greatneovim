@@ -261,7 +261,7 @@ vim.opt.fileencoding  = "utf-8"
 vim.opt.scrolloff     = 8
 vim.opt.sidescrolloff = 8
 vim.opt.termguicolors = true
-vim.opt.mouse         = "a"
+vim.opt.mouse         = ""
 vim.opt.conceallevel  = 0
 vim.opt.hidden        = true
 vim.opt.incsearch     = true
@@ -296,5 +296,4 @@ end, {})
 vim.api.nvim_create_user_command('Config', function()
   vim.cmd('edit ~/.config/nvim')
 end, {})
-
 
