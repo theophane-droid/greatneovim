@@ -7,6 +7,7 @@ local is_fullscreen = false
 local open_terminal_with_mappings
 local switch_terminal
 local setup_terminal_mappings
+local toggle_terminal
 
 -- keep height on resize
 vim.api.nvim_create_autocmd("WinResized", {
@@ -107,14 +108,21 @@ switch_terminal = function(direction)
 end
 
 setup_terminal_mappings = function(buf, idx)
-  vim.keymap.set('t', '<C-z>', function() toggle_fullscreen(idx) end, { buffer = buf, noremap = true, silent = true })
-  vim.keymap.set('t', '<C-j>', function() switch_terminal(-1) end,    { buffer = buf, noremap = true, silent = true })
-  vim.keymap.set('t', '<C-k>', function() switch_terminal(1) end,     { buffer = buf, noremap = true, silent = true })
+  vim.keymap.set('t', '<C-z>', function()
+    toggle_fullscreen(idx)
+  end, { buffer = buf, noremap = true, silent = true })
+
+  vim.keymap.set('t', '<C-j>', function()
+    switch_terminal(-1)
+  end, { buffer = buf, noremap = true, silent = true })
+
+  vim.keymap.set('t', '<C-k>', function()
+    switch_terminal(1)
+  end, { buffer = buf, noremap = true, silent = true })
+
   vim.keymap.set('t', '<C-e>', function()
-    local win = vim.fn.bufwinid(buf)
-    if win ~= -1 and vim.api.nvim_win_is_valid(win) then
-      vim.api.nvim_win_close(win, true)
-    end
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
+    toggle_terminal(idx)
   end, { buffer = buf, noremap = true, silent = true })
 end
 
@@ -126,7 +134,7 @@ open_terminal_with_mappings = function(idx)
   return t
 end
 
-local function toggle_terminal(idx)
+toggle_terminal = function(idx)
   if idx then
     local t = terminals[idx]
     if t and t.win and vim.api.nvim_win_is_valid(t.win) then
