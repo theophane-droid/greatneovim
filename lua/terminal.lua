@@ -62,28 +62,38 @@ end
 local function open_terminal(idx)
   last_idx = idx
   local t = terminals[idx]
+
   if t and vim.api.nvim_buf_is_valid(t.buf) then
     -- focus existing or recreate window
     if t.win and vim.api.nvim_win_is_valid(t.win) then
       vim.api.nvim_set_current_win(t.win)
     else
       t.win = create_window(t.buf, idx, is_fullscreen)
+      vim.api.nvim_set_current_win(t.win)
     end
+
     -- restart shell if needed
     if not t.job or vim.fn.jobwait({ t.job }, 0)[1] ~= -1 then
-      vim.api.nvim_set_current_win(t.win)
       local shell = vim.fn.executable("nu") == 1 and "nu" or os.getenv("SHELL")
       t.job = vim.fn.termopen(shell)
     end
+
+    -- toujours passer en insert quand on ouvre/focus le terminal
+    vim.cmd("startinsert")
     return t
   else
     -- new terminal
     local buf = vim.api.nvim_create_buf(false, true)
     local win = create_window(buf, idx, is_fullscreen)
     vim.api.nvim_buf_set_option(buf, "filetype", "terminal")
+    vim.api.nvim_set_current_win(win)
+
     local shell = vim.fn.executable("nu") == 1 and "nu" or os.getenv("SHELL")
     local job = vim.fn.termopen(shell)
+
     terminals[idx] = { win = win, buf = buf, job = job }
+
+    vim.cmd("startinsert")
     return terminals[idx]
   end
 end
@@ -100,6 +110,12 @@ setup_terminal_mappings = function(buf, idx)
   vim.keymap.set('t', '<C-z>', function() toggle_fullscreen(idx) end, { buffer = buf, noremap = true, silent = true })
   vim.keymap.set('t', '<C-j>', function() switch_terminal(-1) end,    { buffer = buf, noremap = true, silent = true })
   vim.keymap.set('t', '<C-k>', function() switch_terminal(1) end,     { buffer = buf, noremap = true, silent = true })
+  vim.keymap.set('t', '<C-e>', function()
+    local win = vim.fn.bufwinid(buf)
+    if win ~= -1 and vim.api.nvim_win_is_valid(win) then
+      vim.api.nvim_win_close(win, true)
+    end
+  end, { buffer = buf, noremap = true, silent = true })
 end
 
 open_terminal_with_mappings = function(idx)

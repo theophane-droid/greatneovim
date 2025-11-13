@@ -72,6 +72,7 @@ local entries = {
   row("<C-z>", "Toggle terminal fullscreen in term mode"),
   row("<C-k>", "Next terminal in term mode"),
   row("<C-j>", "Prev terminal in term mode"),
+  row("<C-e>", "Exit terminal in term mode"),
   row("<L>ge", "Open launch.json conf"),
   row("<L>gg", "Open run menu"),
   row("<L>gt", "Open term list"),
