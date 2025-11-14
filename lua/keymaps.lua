@@ -43,7 +43,7 @@ vim.keymap.set('n','<leader>fh',':Telescope help_tags<CR>', { desc='Help tags' }
 require('mason').setup()
 require('mason-lspconfig').setup {
     ensure_installed = { "lua_ls","jsonls","yamlls","pyright",
-                         "tsserver","html","cssls", "clangd" },
+                         "html","cssls", "clangd", "jdtls", "volar" },
     automatic_installation = true,
 }
 

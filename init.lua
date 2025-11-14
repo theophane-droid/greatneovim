@@ -21,7 +21,11 @@ require('packer').startup(function(use)
         tree.setup {
           view     = { width = 50, relativenumber = true },
           renderer = { group_empty = true },
-          filters  = { dotfiles = true },
+          filters  = { dotfiles = false, git_ignored = false },
+          git = {
+              ignore = false,
+              enable = true
+          }
         }
 
       end
