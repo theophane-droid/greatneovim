@@ -68,3 +68,11 @@ sudo apt install fonts-jetbrains-mono
 ```
 
 And in your term choose nerd for example `BrainsMono Nerd Font Mono`.
+
+## New
+
+Run :
+
+```
+podman run --rm -it   -v $PWD:/workspace    localhost/greatneovim:latest
+```

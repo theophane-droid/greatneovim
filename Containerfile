@@ -1,0 +1,81 @@
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV XDG_CONFIG_HOME=/config
+ENV XDG_DATA_HOME=/data
+ENV XDG_CACHE_HOME=/cache
+ENV PATH=/usr/local/bin:$PATH
+
+# 1) Dépendances système + toolchain (1 seul layer)
+RUN apt update && apt install -y \
+    git curl wget ca-certificates \
+    ripgrep fd-find unzip \
+    python3 python3-pip \
+    nodejs npm \
+    clangd \
+    openjdk-21-jdk \
+    rustc cargo \
+    # deps build Neovim
+    build-essential cmake ninja-build gettext \
+    libtool libtool-bin pkg-config \
+    libx11-dev libxt-dev xclip wl-clipboard \
+    openssl \
+ && rm -rf /var/lib/apt/lists/*
+
+# 2) rust-analyzer (binaire officiel)
+RUN curl -L https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz \
+    | gunzip -c > /usr/local/bin/rust-analyzer \
+ && chmod +x /usr/local/bin/rust-analyzer
+
+# 3) LSP Node
+RUN npm install -g \
+    pyright \
+    bash-language-server \
+    vscode-langservers-extracted \
+    typescript \
+    typescript-language-server \
+    @vue/language-server \
+    yaml-language-server \
+    dockerfile-language-server-nodejs
+
+# 4) LSP Python
+RUN pip3 install --break-system-packages python-lsp-server
+
+# 5) Installer Neovim (stable) correctement (dans UN seul RUN)
+RUN git clone --depth 1 --branch stable https://github.com/neovim/neovim /tmp/neovim \
+ && make -C /tmp/neovim CMAKE_BUILD_TYPE=RelWithDebInfo -j"$(nproc)" \
+ && make -C /tmp/neovim install \
+ && rm -rf /tmp/neovim
+
+# 6) Votre config
+COPY init.lua /config/nvim/init.lua
+COPY lua /config/nvim/lua
+
+WORKDIR /workspace
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Packer (pour packadd packer.nvim)
+RUN mkdir -p /data/nvim/site/pack/packer/start \
+ && git clone --depth 1 https://github.com/wbthomason/packer.nvim \
+    /data/nvim/site/pack/packer/start/packer.nvim
+
+# Install the best shell
+RUN wget -qO- https://apt.fury.io/nushell/gpg.key | gpg --dearmor -o /etc/apt/keyrings/fury-nushell.gpg
+RUN echo "deb [signed-by=/etc/apt/keyrings/fury-nushell.gpg] https://apt.fury.io/nushell/ /" | tee /etc/apt/sources.list.d/fury.list
+RUN apt -y update
+RUN apt -y install nushell
+
+# Install socat to bind the local ost
+RUN apt -y install socat
+RUN printf '%s\n' '#!/bin/sh' 'exec socat - UNIX-CONNECT:/host.sock' > /usr/local/bin/hostsh && chmod +x /usr/local/bin/hostsh
+ENV SHELL=/usr/local/bin/hostsh
+
+
+RUN nvim --headless \
+  -c "autocmd User PackerComplete quitall" \
+  -c "PackerSync"
+
+
+ENTRYPOINT ["/entrypoint.sh"]
+

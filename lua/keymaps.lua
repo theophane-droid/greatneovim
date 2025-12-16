@@ -40,32 +40,35 @@ vim.keymap.set('n','<leader>fh',':Telescope help_tags<CR>', { desc='Help tags' }
 -- ============================================================================
 -- PLUGIN CONFIG
 -- ============================================================================
-require('mason').setup()
-require('mason-lspconfig').setup {
-    ensure_installed = { "lua_ls","jsonls","yamlls","pyright",
-                         "html","cssls", "clangd", "jdtls", "volar" },
-    automatic_installation = true,
-}
+-- If mason works, all the plugins should be installed
+local ok, mason = pcall(require, "mason")
+if ok then
+        require('mason').setup()
+        require('mason-lspconfig').setup {
+            ensure_installed = { "lua_ls","jsonls","yamlls","pyright",
+                                 "html","cssls", "clangd", "jdtls", "volar" },
+            automatic_installation = true,
+        }
 
-local cmp = require('cmp')
-local luasnip = require('luasnip')
-cmp.setup {
-    snippet = { expand = function(args) luasnip.lsp_expand(args.body) end },
-    mapping = cmp.mapping.preset.insert {
-        ['<C-b>']   = cmp.mapping.scroll_docs(-4),
-        ['<C-f>']   = cmp.mapping.scroll_docs(4),
-        ['<C-Space>'] = cmp.mapping.complete(),
-        ['<C-e>']   = cmp.mapping.abort(),
-        ['<CR>']    = cmp.mapping.confirm { select = true },
-    },
-    sources = {
-        { name='nvim_lsp' },
-        { name='luasnip' },
-        { name='buffer'  },
-        { name='path'    },
-    },
-}
-require('luasnip.loaders.from_vscode').lazy_load()
+	local cmp = require('cmp')
+	local luasnip = require('luasnip')
+	cmp.setup {
+	    snippet = { expand = function(args) luasnip.lsp_expand(args.body) end },
+	    mapping = cmp.mapping.preset.insert {
+		['<C-b>']   = cmp.mapping.scroll_docs(-4),
+		['<C-f>']   = cmp.mapping.scroll_docs(4),
+		['<C-Space>'] = cmp.mapping.complete(),
+		['<C-e>']   = cmp.mapping.abort(),
+		['<CR>']    = cmp.mapping.confirm { select = true },
+	    },
+	    sources = {
+		{ name='nvim_lsp' },
+		{ name='luasnip' },
+		{ name='buffer'  },
+		{ name='path'    },
+	    },
+	}
+	require('luasnip.loaders.from_vscode').lazy_load()
 
 local on_attach = function(_, bufnr)
     local opts = { noremap=true, silent=true, buffer=bufnr }
@@ -101,11 +104,11 @@ require('lspconfig').clangd.setup {
     root_dir = require('lspconfig.util').root_pattern("compile_commands.json", ".git"),
 }
 
+vim.cmd.colorscheme 'dracula'
+end
 vim.api.nvim_create_user_command("Cheatsheet", function()
     require("cheatsheet").show()
 end, { desc = "Show Vim/Neovim Cheatsheet" })
-
-vim.cmd.colorscheme 'dracula'
 vim.keymap.set('n','<leader>cs',':Cheatsheet<CR>', { desc='Show Cheatsheet' })
 vim.keymap.set('n','<leader>n', ':set invrelativenumber<CR>', { desc='Toggle relativenumber' })
 vim.keymap.set('n','<leader>t', require("terminal").toggle_terminal, { desc='Open terminal' })

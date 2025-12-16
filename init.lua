@@ -1,7 +1,7 @@
 -- ============================================================================
 -- PACKER.NVIM - Plugin manager
 -- ============================================================================
-vim.cmd [[packadd packer.nvim]]
+pcall(vim.cmd, "packadd packer.nvim")
 
 require('packer').startup(function(use)
     -- Packer itself
