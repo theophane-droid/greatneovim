@@ -37,7 +37,7 @@ build -t greatneovim .
 
 Then run :
 
-```
+```bash
 ./run.sh
 ```
 
@@ -56,7 +56,7 @@ MobaXterm works as an X11 client, but PuTTY does not.
 
 Append this at the end of the `~/.tmux/conf` file : 
 
-```
+```bash
 set-option -sa terminal-overrides ',*:Tc'
 set -g default-terminal "xterm-256color"
 set -ga terminal-overrides ",xterm-256color:Tc"
@@ -77,6 +77,6 @@ And in your term choose nerd for example `BrainsMono Nerd Font Mono`.
 
 To have all icons working, you need a Nerd Font installed.
 
-```
+```bash
 sudo apt install fonts-jetbrains-mono
 ```
