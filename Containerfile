@@ -68,7 +68,10 @@ RUN apt -y install nushell
 
 # Install socat to bind the local ost
 RUN apt -y install socat
-RUN printf '%s\n' '#!/bin/sh' 'exec socat - UNIX-CONNECT:/host.sock' > /usr/local/bin/hostsh && chmod +x /usr/local/bin/hostsh
+RUN printf '%s\n' \
+  '#!/bin/sh' \
+  'exec socat STDIO,raw,echo=0 UNIX-CONNECT:/host.sock' \
+  > /usr/local/bin/hostsh && chmod 0755 /usr/local/bin/hostsh
 ENV SHELL=/usr/local/bin/hostsh
 
 

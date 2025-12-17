@@ -2,7 +2,13 @@
 
 Want a simple yet usable Neovim setup? You’re in the right place.
 
-## Installation on Debian-like Systems
+Two options for deployment :
+- native
+- podman based (ready-to-go)
+
+## Native installation
+
+Installation on Debian-like Systems
 
 On an up-to-date system, run:
 
@@ -10,14 +16,29 @@ On an up-to-date system, run:
 git clone https://github.com/theophane-droid/greatneovim
 chmod +x install.sh
 ./install.sh
-````
+```
 
 # Updating to the Latest Version
 
 Simply run:
 
-```bash
+```bash 
 ./install.sh
+```
+
+## Podman-deployment
+
+You can deploy your neovim inside a podman container, your shell will be going up to the using with socat.
+
+```bash
+sudo apt -y install podman socat
+build -t greatneovim .
+```
+
+Then run :
+
+```
+./run/sh
 ```
 
 ## Mouse Copy-Paste
@@ -50,29 +71,12 @@ bind k select-pane -U
 bind l select-pane -R
 ```
 
-# Rebuild an AppImage distribution
-
-```
-chmod +x ./build.sh
-./build.sh
-```
-
+And in your term choose nerd for example `BrainsMono Nerd Font Mono`.
 
 # Font
 
-
-Need nerd font :
+To have all icons working, you need a Nerd Font installed.
 
 ```
 sudo apt install fonts-jetbrains-mono
-```
-
-And in your term choose nerd for example `BrainsMono Nerd Font Mono`.
-
-## New
-
-Run :
-
-```
-podman run --rm -it   -v $PWD:/workspace    localhost/greatneovim:latest
 ```

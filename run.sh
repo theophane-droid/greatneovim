@@ -27,7 +27,7 @@ command -v socat >/dev/null 2>&1 || {
 
 # Démarre le serveur shell host (un nouveau bash par connexion)
 rm -f "${SOCK}"
-socat UNIX-LISTEN:"${SOCK}",fork EXEC:"bash",pty,setsid,stderr,sigint,sane &
+socat UNIX-LISTEN:"${SOCK}",fork EXEC:"bash -li",pty,setsid,stderr,sigint,sane &
 SOCAT_PID=$!
 
 # Attendre que le socket soit prêt
