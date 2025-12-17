@@ -78,5 +78,9 @@ And in your term choose nerd for example `BrainsMono Nerd Font Mono`.
 To have all icons working, you need a Nerd Font installed.
 
 ```bash
-sudo apt install fonts-jetbrains-mono
+mkdir -p ~/.local/share/fonts
+cd ~/.local/share/fonts
+curl -LO https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+unzip JetBrainsMono.zip
+fc-cache -fv
 ```

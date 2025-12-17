@@ -69,6 +69,9 @@ RUN nvim --headless \
   -c "autocmd User PackerComplete quitall" \
   -c "PackerSync"
 
+RUN apt -y install fonts-jetbrains-mono
+
+
 
 ENTRYPOINT ["/entrypoint.sh"]
 
