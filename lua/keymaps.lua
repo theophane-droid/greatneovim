@@ -46,7 +46,7 @@ if ok then
         require('mason').setup()
         require('mason-lspconfig').setup {
             ensure_installed = { "lua_ls","jsonls","yamlls","pyright",
-                                 "html","cssls", "clangd", "jdtls", "volar" },
+                                 "html","cssls", "clangd", "jdtls" },
             automatic_installation = true,
         }
 

@@ -69,7 +69,7 @@ RUN nvim --headless \
   -c "autocmd User PackerComplete quitall" \
   -c "PackerSync"
 
-RUN apt -y install fonts-jetbrains-mono
+RUN apt -y install rsync ssh
 
 
 
