@@ -38,7 +38,7 @@ build -t greatneovim .
 Then run :
 
 ```
-./run/sh
+./run.sh
 ```
 
 ## Mouse Copy-Paste
